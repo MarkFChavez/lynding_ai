@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  borrower: one
+  referral_agent: one
+  amount: 50000.00
+  interest_rate: 12.0
+  term_months: 12
+  start_date: 2025-11-18
+  status: active
+
+two:
+  borrower: two
+  referral_agent: two
+  amount: 100000.00
+  interest_rate: 15.0
+  term_months: 24
+  start_date: 2025-11-18
+  status: active

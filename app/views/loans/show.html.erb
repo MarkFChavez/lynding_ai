@@ -1,0 +1,95 @@
+<% content_for :title, "Lynding - Loan Details" %>
+
+<div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+  <% if notice.present? %>
+    <div class="mb-6 rounded-md bg-gray-50 border border-gray-200 p-4">
+      <p class="text-sm text-gray-700 font-medium" id="notice"><%= notice %></p>
+    </div>
+  <% end %>
+
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Loan Details</h1>
+    <p class="mt-2 text-sm text-gray-600">View and manage loan information</p>
+  </div>
+
+  <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+    <%= render @loan %>
+  </div>
+
+  <!-- Payment Schedule Section -->
+  <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+    <h2 class="text-xl font-bold text-gray-900 mb-4">Payment Schedule</h2>
+
+    <% if @loan.installments.any? %>
+      <!-- Summary Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+        <div>
+          <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Paid</dt>
+          <dd class="text-lg font-bold text-green-600">
+            <%= @loan.installments.where(status: 'paid').count %> / <%= @loan.installments.count %>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Next Due</dt>
+          <dd class="text-lg font-semibold text-gray-900">
+            <%= @loan.next_installment&.due_date&.strftime("%b %d, %Y") || 'All paid' %>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Overdue</dt>
+          <dd class="text-lg font-bold text-red-600">
+            <%= @loan.overdue_installments.count %>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Remaining</dt>
+          <dd class="text-lg font-semibold text-indigo-600">
+            <%= format_php_currency(@loan.installments.sum { |i| i.balance_remaining }) %>
+          </dd>
+        </div>
+      </div>
+
+      <!-- Installment Table -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">#</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Due Date</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Principal</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Interest</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Total</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Paid</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Balance</th>
+              <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wide">Status</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% @loan.installments.order(:installment_number).each do |installment| %>
+              <tr class="<%= 'bg-yellow-50' if installment.overdue? %>">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900"><%= installment.installment_number %></td>
+                <td class="px-4 py-3 text-sm text-gray-900"><%= installment.due_date.strftime("%b %d, %Y") %></td>
+                <td class="px-4 py-3 text-sm text-gray-600 text-right"><%= format_php_currency(installment.principal_amount) %></td>
+                <td class="px-4 py-3 text-sm text-gray-600 text-right"><%= format_php_currency(installment.interest_amount) %></td>
+                <td class="px-4 py-3 text-sm font-semibold text-gray-900 text-right"><%= format_php_currency(installment.total_amount) %></td>
+                <td class="px-4 py-3 text-sm text-green-600 text-right"><%= format_php_currency(installment.amount_paid) %></td>
+                <td class="px-4 py-3 text-sm text-indigo-600 text-right font-medium"><%= format_php_currency(installment.balance_remaining) %></td>
+                <td class="px-4 py-3 text-center">
+                  <%= render partial: 'installments/status_badge', locals: { installment: installment } %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-gray-500 text-center py-8">No installment schedule generated yet.</p>
+    <% end %>
+  </div>
+
+  <div class="flex flex-col sm:flex-row gap-3">
+    <%= link_to "Edit this loan", edit_loan_path(@loan), class: "inline-flex items-center justify-center rounded-md px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium border border-slate-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors" %>
+    <%= link_to "Back to loans", loans_path, class: "inline-flex items-center justify-center rounded-md px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-900 text-sm font-medium border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors" %>
+    <%= button_to "Delete this loan", @loan, method: :delete, form_class: "sm:inline-block", class: "w-full sm:w-auto inline-flex items-center justify-center rounded-md px-4 py-2.5 text-white bg-red-600 hover:bg-red-700 text-sm font-medium cursor-pointer transition-colors", data: { turbo_confirm: "Are you sure you want to delete this loan?" } %>
+  </div>
+</div>

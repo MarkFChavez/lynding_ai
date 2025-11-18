@@ -1,0 +1,53 @@
+<%= form_with(model: loan, class: "space-y-6") do |form| %>
+  <% if loan.errors.any? %>
+    <div id="error_explanation" class="bg-gray-50 border border-gray-300 text-gray-900 px-4 py-3 rounded-md">
+      <h3 class="text-sm font-semibold mb-2"><%= pluralize(loan.errors.count, "error") %> prohibited this loan from being saved:</h3>
+      <ul class="list-disc ml-5 text-sm space-y-1">
+        <% loan.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+    <div>
+      <%= form.label :borrower_id, "Borrower", class: "block text-sm font-medium text-gray-900 mb-2" %>
+      <%= form.collection_select :borrower_id, Borrower.order(:name), :id, :name, { prompt: 'Select a borrower' }, class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:borrower_id].none?, "border-gray-400 bg-gray-50": loan.errors[:borrower_id].any?}] %>
+    </div>
+
+    <div>
+      <%= form.label :referral_agent_id, "Referral Agent (Optional)", class: "block text-sm font-medium text-gray-900 mb-2" %>
+      <%= form.collection_select :referral_agent_id, ReferralAgent.order(:name), :id, :name, { include_blank: 'None' }, class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:referral_agent_id].none?, "border-gray-400 bg-gray-50": loan.errors[:referral_agent_id].any?}] %>
+    </div>
+
+    <div>
+      <%= form.label :amount, "Amount (PHP)", class: "block text-sm font-medium text-gray-900 mb-2" %>
+      <%= form.text_field :amount, placeholder: "0.00", class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:amount].none?, "border-gray-400 bg-gray-50": loan.errors[:amount].any?}] %>
+    </div>
+
+    <div>
+      <%= form.label :interest_rate, "Interest Rate (%)", class: "block text-sm font-medium text-gray-900 mb-2" %>
+      <%= form.text_field :interest_rate, placeholder: "0.00", class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:interest_rate].none?, "border-gray-400 bg-gray-50": loan.errors[:interest_rate].any?}] %>
+    </div>
+
+    <div>
+      <%= form.label :term_months, "Term (Months)", class: "block text-sm font-medium text-gray-900 mb-2" %>
+      <%= form.number_field :term_months, placeholder: "12", class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:term_months].none?, "border-gray-400 bg-gray-50": loan.errors[:term_months].any?}] %>
+    </div>
+
+    <div>
+      <%= form.label :start_date, class: "block text-sm font-medium text-gray-900 mb-2" %>
+      <%= form.date_field :start_date, class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:start_date].none?, "border-gray-400 bg-gray-50": loan.errors[:start_date].any?}] %>
+    </div>
+
+    <div class="sm:col-span-2">
+      <%= form.label :status, class: "block text-sm font-medium text-gray-900 mb-2" %>
+      <%= form.select :status, [['Active', 'active'], ['Paid', 'paid'], ['Defaulted', 'defaulted']], { prompt: 'Select status' }, class: ["block w-full sm:w-auto rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:status].none?, "border-gray-400 bg-gray-50": loan.errors[:status].any?}] %>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3 pt-4 border-t border-gray-200">
+    <%= form.submit class: "inline-flex items-center justify-center rounded-md px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 cursor-pointer transition-colors" %>
+  </div>
+<% end %>

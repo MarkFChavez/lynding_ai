@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  loan: one
+  amount: 10000.00
+  payment_date: 2025-11-18
+  notes: Test payment
+
+two:
+  loan: two
+  amount: 25000.00
+  payment_date: 2025-11-18
+  notes: Test payment

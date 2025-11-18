@@ -1,0 +1,18 @@
+<div id="<%= dom_id payment %>" class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <div>
+    <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Loan</dt>
+    <dd class="mt-1 text-sm font-medium text-gray-900"><%= payment.loan&.borrower&.name || payment.loan_id %></dd>
+  </div>
+  <div>
+    <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Amount</dt>
+    <dd class="mt-1 text-sm font-semibold text-indigo-600"><%= format_php_currency(payment.amount) %></dd>
+  </div>
+  <div>
+    <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Payment Date</dt>
+    <dd class="mt-1 text-sm text-gray-900"><%= payment.payment_date.strftime("%B %d, %Y") rescue payment.payment_date %></dd>
+  </div>
+  <div class="sm:col-span-2 lg:col-span-1">
+    <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Notes</dt>
+    <dd class="mt-1 text-sm text-gray-900"><%= payment.notes.presence || 'No notes' %></dd>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<% content_for :title, "Lynding - New Payment" %>
+
+<div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Record New Payment</h1>
+    <p class="mt-2 text-sm text-gray-600">Enter the payment details</p>
+  </div>
+
+  <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+    <%= render "form", payment: @payment %>
+  </div>
+
+  <%= link_to "Back to payments", payments_path, class: "inline-flex items-center justify-center rounded-md px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-900 text-sm font-medium border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors" %>
+</div>

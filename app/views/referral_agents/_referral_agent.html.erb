@@ -1,0 +1,18 @@
+<div id="<%= dom_id referral_agent %>" class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <div>
+    <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Name</dt>
+    <dd class="mt-1 text-sm font-medium text-gray-900"><%= referral_agent.name %></dd>
+  </div>
+  <div>
+    <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Email</dt>
+    <dd class="mt-1 text-sm text-gray-900"><%= referral_agent.email %></dd>
+  </div>
+  <div>
+    <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Phone</dt>
+    <dd class="mt-1 text-sm text-gray-900"><%= referral_agent.phone %></dd>
+  </div>
+  <div>
+    <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Commission Rate</dt>
+    <dd class="mt-1 text-sm font-semibold text-gray-900"><%= referral_agent.commission_rate %>%</dd>
+  </div>
+</div>
