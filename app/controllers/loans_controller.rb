@@ -1,9 +1,9 @@
 class LoansController < ApplicationController
-  before_action :set_loan, only: %i[ show edit update destroy ]
+  before_action :set_loan, only: %i[ show edit update destroy export_pdf export_csv ]
 
   # GET /loans or /loans.json
   def index
-    @loans = Loan.order(start_date: :desc).page(params[:page]).per(10)
+    @loans = Loan.order(start_date: :desc).page(params[:page]).per(5)
   end
 
   # GET /loans/1 or /loans/1.json
@@ -65,6 +65,24 @@ class LoansController < ApplicationController
         format.json { head :no_content }
       end
     end
+  end
+
+  # GET /loans/1/export_pdf
+  def export_pdf
+    pdf = LoanPdfExporter.new(@loan).generate
+    send_data pdf.render,
+      filename: "loan_#{@loan.id}_#{@loan.borrower.name.parameterize}_#{Date.current.strftime('%Y%m%d')}.pdf",
+      type: 'application/pdf',
+      disposition: 'attachment'
+  end
+
+  # GET /loans/1/export_csv
+  def export_csv
+    csv_data = LoanCsvExporter.new(@loan).generate
+    send_data csv_data,
+      filename: "loan_#{@loan.id}_#{@loan.borrower.name.parameterize}_#{Date.current.strftime('%Y%m%d')}.csv",
+      type: 'text/csv',
+      disposition: 'attachment'
   end
 
   private

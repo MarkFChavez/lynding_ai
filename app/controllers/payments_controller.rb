@@ -3,7 +3,7 @@ class PaymentsController < ApplicationController
 
   # GET /payments or /payments.json
   def index
-    @payments = Payment.order(created_at: :desc).page(params[:page]).per(10)
+    @payments = Payment.order(created_at: :desc).page(params[:page]).per(5)
   end
 
   # GET /payments/1 or /payments/1.json
@@ -52,9 +52,18 @@ class PaymentsController < ApplicationController
 
   # DELETE /payments/1 or /payments/1.json
   def destroy
-    respond_to do |format|
-      format.html { redirect_to @payment, alert: "Cannot delete payments. Payment records must be preserved for accounting integrity.", status: :see_other }
-      format.json { render json: { error: "Cannot delete payments" }, status: :unprocessable_entity }
+    if @payment.installment_payments.exists?
+      respond_to do |format|
+        format.html { redirect_to @payment, alert: "Cannot delete payment that has been applied to installments. This payment is already applied to #{@payment.installment_payments.count} installment(s).", status: :see_other }
+        format.json { render json: { error: "Cannot delete payment that has been applied to installments" }, status: :unprocessable_entity }
+      end
+    else
+      @payment.destroy!
+
+      respond_to do |format|
+        format.html { redirect_to payments_path, notice: "Payment was successfully deleted.", status: :see_other }
+        format.json { head :no_content }
+      end
     end
   end
 

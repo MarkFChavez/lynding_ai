@@ -3,7 +3,7 @@ class ReferralAgentsController < ApplicationController
 
   # GET /referral_agents or /referral_agents.json
   def index
-    @referral_agents = ReferralAgent.order(created_at: :desc).page(params[:page]).per(10)
+    @referral_agents = ReferralAgent.order(created_at: :desc).page(params[:page]).per(5)
   end
 
   # GET /referral_agents/1 or /referral_agents/1.json

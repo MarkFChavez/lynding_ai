@@ -4,7 +4,12 @@ Rails.application.routes.draw do
   root "dashboard#index"
 
   resources :payments
-  resources :loans
+  resources :loans do
+    member do
+      get :export_pdf
+      get :export_csv
+    end
+  end
   resources :referral_agents
   resources :borrowers
 

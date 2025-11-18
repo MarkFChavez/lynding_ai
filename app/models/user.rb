@@ -5,4 +5,8 @@ class User < ApplicationRecord
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
   validates :role, presence: true, inclusion: { in: %w[owner] }
+
+  def email
+    email_address
+  end
 end

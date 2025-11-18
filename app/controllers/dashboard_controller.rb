@@ -12,5 +12,10 @@ class DashboardController < ApplicationController
 
     # Outstanding balance
     @outstanding_balance = Loan.where(status: 'active').sum { |loan| loan.balance_remaining }
+
+    # Overdue loans - loans with overdue installments
+    @overdue_loans = Loan.includes(:borrower, :installments)
+                         .where(status: 'active')
+                         .select { |loan| loan.overdue_installments.any? }
   end
 end

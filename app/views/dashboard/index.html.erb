@@ -85,6 +85,78 @@
     </div>
   </div>
 
+  <!-- Overdue Loans Alert -->
+  <% if @overdue_loans.any? %>
+    <div class="mb-8 bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-500 rounded-lg shadow-md overflow-hidden">
+      <div class="p-6">
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <svg class="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+          </div>
+          <div class="ml-4 flex-1">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-lg font-bold text-red-900">
+                Overdue Loans Require Attention
+              </h3>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-red-600 text-white">
+                <%= @overdue_loans.count %> <%= @overdue_loans.count == 1 ? 'Loan' : 'Loans' %>
+              </span>
+            </div>
+            <p class="text-sm text-red-800 mb-4">
+              The following loans have overdue installments that need immediate attention.
+            </p>
+            <div class="space-y-2">
+              <% @overdue_loans.each do |loan| %>
+                <div class="bg-white rounded-lg border-2 border-red-200 p-4 hover:border-red-300 transition-colors">
+                  <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-3">
+                        <h4 class="text-base font-semibold text-gray-900"><%= loan.borrower.name %></h4>
+                        <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800 border border-red-300">
+                          <%= loan.overdue_installments.count %> overdue <%= loan.overdue_installments.count == 1 ? 'installment' : 'installments' %>
+                        </span>
+                      </div>
+                      <div class="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-sm">
+                        <div>
+                          <span class="text-gray-500">Loan Amount:</span>
+                          <span class="ml-1 font-semibold text-gray-900"><%= format_php_currency(loan.amount) %></span>
+                        </div>
+                        <div>
+                          <span class="text-gray-500">Balance:</span>
+                          <span class="ml-1 font-semibold text-red-700"><%= format_php_currency(loan.balance_remaining) %></span>
+                        </div>
+                        <div>
+                          <span class="text-gray-500">Next Due:</span>
+                          <span class="ml-1 font-semibold text-gray-900"><%= loan.next_installment&.due_date&.strftime("%b %d, %Y") || 'N/A' %></span>
+                        </div>
+                        <div>
+                          <span class="text-gray-500">Days Overdue:</span>
+                          <span class="ml-1 font-semibold text-red-700">
+                            <%= (Date.today - loan.overdue_installments.minimum(:due_date)).to_i %> days
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="ml-4">
+                      <%= link_to loan, class: "inline-flex items-center justify-center rounded-md px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium shadow-sm transition-colors" do %>
+                        View Details
+                        <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <!-- Secondary Stats -->
   <div class="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-8">
     <div class="bg-white overflow-hidden border border-gray-200 rounded-lg hover:shadow-md transition-shadow">

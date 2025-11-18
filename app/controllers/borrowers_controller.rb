@@ -3,7 +3,7 @@ class BorrowersController < ApplicationController
 
   # GET /borrowers or /borrowers.json
   def index
-    @borrowers = Borrower.order(created_at: :desc).page(params[:page]).per(10)
+    @borrowers = Borrower.order(created_at: :desc).page(params[:page]).per(5)
   end
 
   # GET /borrowers/1 or /borrowers/1.json
