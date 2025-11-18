@@ -168,6 +168,7 @@
               <thead>
                 <tr>
                   <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Borrower</th>
+                  <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
                   <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                   <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Interest Rate</th>
                   <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Term</th>
@@ -180,6 +181,7 @@
                 <% @recent_loans.each do |loan| %>
                   <tr class="hover:bg-gray-50 transition-colors">
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><%= loan.borrower.name %></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><%= loan.start_date.strftime("%b %d, %Y") %></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-indigo-600"><%= format_php_currency(loan.amount) %></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><%= loan.interest_rate %>%</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600"><%= loan.term_months %> months</td>

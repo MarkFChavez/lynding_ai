@@ -3,7 +3,7 @@ class LoansController < ApplicationController
 
   # GET /loans or /loans.json
   def index
-    @loans = Loan.all
+    @loans = Loan.order(start_date: :desc).page(params[:page]).per(10)
   end
 
   # GET /loans/1 or /loans/1.json
@@ -22,6 +22,8 @@ class LoansController < ApplicationController
   # POST /loans or /loans.json
   def create
     @loan = Loan.new(loan_params)
+    @loan.created_by = Current.user
+    @loan.updated_by = Current.user
 
     respond_to do |format|
       if @loan.save
@@ -36,6 +38,7 @@ class LoansController < ApplicationController
 
   # PATCH/PUT /loans/1 or /loans/1.json
   def update
+    @loan.updated_by = Current.user
     respond_to do |format|
       if @loan.update(loan_params)
         format.html { redirect_to @loan, notice: "Loan was successfully updated.", status: :see_other }
@@ -49,11 +52,18 @@ class LoansController < ApplicationController
 
   # DELETE /loans/1 or /loans/1.json
   def destroy
-    @loan.destroy!
+    if @loan.payments.exists?
+      respond_to do |format|
+        format.html { redirect_to @loan, alert: "Cannot delete loan with payment history. #{@loan.payments.count} payment(s) recorded.", status: :see_other }
+        format.json { render json: { error: "Cannot delete loan with payment history" }, status: :unprocessable_entity }
+      end
+    else
+      @loan.destroy!
 
-    respond_to do |format|
-      format.html { redirect_to loans_path, notice: "Loan was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+      respond_to do |format|
+        format.html { redirect_to loans_path, notice: "Loan was successfully deleted.", status: :see_other }
+        format.json { head :no_content }
+      end
     end
   end
 

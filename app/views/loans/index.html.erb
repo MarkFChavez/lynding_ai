@@ -24,7 +24,11 @@
             <div class="flex flex-col sm:flex-row gap-2 lg:ml-6 flex-shrink-0">
               <%= link_to "View", loan, class: "text-center rounded-md px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium border border-slate-200 transition-colors" %>
               <%= link_to "Edit", edit_loan_path(loan), class: "text-center rounded-md px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-medium border border-slate-200 transition-colors" %>
-              <%= button_to "Delete", loan, method: :delete, class: "rounded-md px-4 py-2 text-white bg-red-600 hover:bg-red-700 text-sm font-medium cursor-pointer transition-colors", data: { turbo_confirm: "Are you sure you want to delete this loan?" } %>
+              <% if loan.payments.exists? %>
+                <button disabled title="Cannot delete loan with payment history" class="rounded-md px-4 py-2 text-white bg-gray-400 text-sm font-medium cursor-not-allowed opacity-60">Delete</button>
+              <% else %>
+                <%= button_to "Delete", loan, method: :delete, class: "rounded-md px-4 py-2 text-white bg-red-600 hover:bg-red-700 text-sm font-medium cursor-pointer transition-colors", data: { turbo_confirm: "Are you sure you want to delete this loan?" } %>
+              <% end %>
             </div>
           </div>
         </div>
@@ -35,5 +39,9 @@
         <%= link_to "Create Loan", new_loan_path, class: "mt-4 inline-flex items-center justify-center rounded-md px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors" %>
       </div>
     <% end %>
+  </div>
+
+  <div class="mt-6 flex justify-center">
+    <%= paginate @loans %>
   </div>
 </div>

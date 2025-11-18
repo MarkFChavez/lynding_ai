@@ -3,7 +3,7 @@ class PaymentsController < ApplicationController
 
   # GET /payments or /payments.json
   def index
-    @payments = Payment.all
+    @payments = Payment.order(created_at: :desc).page(params[:page]).per(10)
   end
 
   # GET /payments/1 or /payments/1.json
@@ -22,6 +22,8 @@ class PaymentsController < ApplicationController
   # POST /payments or /payments.json
   def create
     @payment = Payment.new(payment_params)
+    @payment.created_by = Current.user
+    @payment.updated_by = Current.user
 
     respond_to do |format|
       if @payment.save
@@ -36,6 +38,7 @@ class PaymentsController < ApplicationController
 
   # PATCH/PUT /payments/1 or /payments/1.json
   def update
+    @payment.updated_by = Current.user
     respond_to do |format|
       if @payment.update(payment_params)
         format.html { redirect_to @payment, notice: "Payment was successfully updated.", status: :see_other }
@@ -49,11 +52,9 @@ class PaymentsController < ApplicationController
 
   # DELETE /payments/1 or /payments/1.json
   def destroy
-    @payment.destroy!
-
     respond_to do |format|
-      format.html { redirect_to payments_path, notice: "Payment was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+      format.html { redirect_to @payment, alert: "Cannot delete payments. Payment records must be preserved for accounting integrity.", status: :see_other }
+      format.json { render json: { error: "Cannot delete payments" }, status: :unprocessable_entity }
     end
   end
 

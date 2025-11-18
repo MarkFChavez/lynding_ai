@@ -3,7 +3,7 @@ class BorrowersController < ApplicationController
 
   # GET /borrowers or /borrowers.json
   def index
-    @borrowers = Borrower.all
+    @borrowers = Borrower.order(created_at: :desc).page(params[:page]).per(10)
   end
 
   # GET /borrowers/1 or /borrowers/1.json
@@ -22,6 +22,8 @@ class BorrowersController < ApplicationController
   # POST /borrowers or /borrowers.json
   def create
     @borrower = Borrower.new(borrower_params)
+    @borrower.created_by = Current.user
+    @borrower.updated_by = Current.user
 
     respond_to do |format|
       if @borrower.save
@@ -36,6 +38,7 @@ class BorrowersController < ApplicationController
 
   # PATCH/PUT /borrowers/1 or /borrowers/1.json
   def update
+    @borrower.updated_by = Current.user
     respond_to do |format|
       if @borrower.update(borrower_params)
         format.html { redirect_to @borrower, notice: "Borrower was successfully updated.", status: :see_other }
@@ -49,11 +52,18 @@ class BorrowersController < ApplicationController
 
   # DELETE /borrowers/1 or /borrowers/1.json
   def destroy
-    @borrower.destroy!
+    if @borrower.loans.exists?
+      respond_to do |format|
+        format.html { redirect_to @borrower, alert: "Cannot delete borrower with existing loans. #{@borrower.loans.count} loan(s) found.", status: :see_other }
+        format.json { render json: { error: "Cannot delete borrower with existing loans" }, status: :unprocessable_entity }
+      end
+    else
+      @borrower.destroy!
 
-    respond_to do |format|
-      format.html { redirect_to borrowers_path, notice: "Borrower was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+      respond_to do |format|
+        format.html { redirect_to borrowers_path, notice: "Borrower was successfully deleted.", status: :see_other }
+        format.json { head :no_content }
+      end
     end
   end
 

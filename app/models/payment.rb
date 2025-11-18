@@ -1,5 +1,7 @@
 class Payment < ApplicationRecord
   belongs_to :loan
+  belongs_to :created_by, class_name: "User", optional: true
+  belongs_to :updated_by, class_name: "User", optional: true
   has_many :installment_payments, dependent: :destroy
   has_many :installments, through: :installment_payments
 
@@ -29,7 +31,7 @@ class Payment < ApplicationRecord
   def auto_apply_to_installments
     return if fully_applied?
 
-    remaining = amount_remaining
+    remaining = amount
 
     # Apply to installments in order: overdue first, then by due date
     loan.installments
@@ -39,6 +41,9 @@ class Payment < ApplicationRecord
       break if remaining <= 0.01
 
       amount_to_apply = [remaining, installment.balance_remaining].min
+
+      # Skip if amount is too small
+      next if amount_to_apply <= 0
 
       InstallmentPayment.create!(
         installment: installment,

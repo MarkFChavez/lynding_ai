@@ -8,7 +8,7 @@ class DashboardController < ApplicationController
     @total_borrowers = Borrower.count
 
     # Recent loans
-    @recent_loans = Loan.includes(:borrower, :referral_agent).order(created_at: :desc).limit(5)
+    @recent_loans = Loan.includes(:borrower, :referral_agent).order(start_date: :desc).limit(5)
 
     # Outstanding balance
     @outstanding_balance = Loan.where(status: 'active').sum { |loan| loan.balance_remaining }

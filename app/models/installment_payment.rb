@@ -12,7 +12,7 @@ class InstallmentPayment < ApplicationRecord
   private
 
   def amount_within_bounds
-    if amount_applied && payment && amount_applied > payment.amount
+    if amount_applied && payment && amount_applied > payment.amount + 0.01
       errors.add(:amount_applied, "cannot exceed payment amount")
     end
 

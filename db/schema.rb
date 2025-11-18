@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_18_064011) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_18_095557) do
   create_table "borrowers", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -18,6 +18,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_18_064011) do
     t.text "address"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "created_by_id"
+    t.integer "updated_by_id"
+    t.index ["created_by_id"], name: "index_borrowers_on_created_by_id"
+    t.index ["updated_by_id"], name: "index_borrowers_on_updated_by_id"
   end
 
   create_table "installment_payments", force: :cascade do |t|
@@ -58,8 +62,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_18_064011) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "created_by_id"
+    t.integer "updated_by_id"
     t.index ["borrower_id"], name: "index_loans_on_borrower_id"
+    t.index ["created_by_id"], name: "index_loans_on_created_by_id"
     t.index ["referral_agent_id"], name: "index_loans_on_referral_agent_id"
+    t.index ["updated_by_id"], name: "index_loans_on_updated_by_id"
   end
 
   create_table "payments", force: :cascade do |t|
@@ -69,7 +77,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_18_064011) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "created_by_id"
+    t.integer "updated_by_id"
+    t.index ["created_by_id"], name: "index_payments_on_created_by_id"
     t.index ["loan_id"], name: "index_payments_on_loan_id"
+    t.index ["updated_by_id"], name: "index_payments_on_updated_by_id"
   end
 
   create_table "referral_agents", force: :cascade do |t|
@@ -79,12 +91,43 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_18_064011) do
     t.decimal "commission_rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "created_by_id"
+    t.integer "updated_by_id"
+    t.index ["created_by_id"], name: "index_referral_agents_on_created_by_id"
+    t.index ["updated_by_id"], name: "index_referral_agents_on_updated_by_id"
   end
 
+  create_table "sessions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "ip_address"
+    t.string "user_agent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email_address", null: false
+    t.string "password_digest", null: false
+    t.string "role", default: "owner", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email_address"], name: "index_users_on_email_address", unique: true
+  end
+
+  add_foreign_key "borrowers", "users", column: "created_by_id"
+  add_foreign_key "borrowers", "users", column: "updated_by_id"
   add_foreign_key "installment_payments", "installments"
   add_foreign_key "installment_payments", "payments"
   add_foreign_key "installments", "loans"
   add_foreign_key "loans", "borrowers"
   add_foreign_key "loans", "referral_agents"
+  add_foreign_key "loans", "users", column: "created_by_id"
+  add_foreign_key "loans", "users", column: "updated_by_id"
   add_foreign_key "payments", "loans"
+  add_foreign_key "payments", "users", column: "created_by_id"
+  add_foreign_key "payments", "users", column: "updated_by_id"
+  add_foreign_key "referral_agents", "users", column: "created_by_id"
+  add_foreign_key "referral_agents", "users", column: "updated_by_id"
+  add_foreign_key "sessions", "users"
 end

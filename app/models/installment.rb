@@ -4,7 +4,8 @@ class Installment < ApplicationRecord
   has_many :payments, through: :installment_payments
 
   validates :installment_number, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :principal_amount, :interest_amount, :total_amount, presence: true, numericality: { greater_than: 0 }
+  validates :principal_amount, :total_amount, presence: true, numericality: { greater_than: 0 }
+  validates :interest_amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :due_date, presence: true
   validates :status, presence: true, inclusion: { in: %w[pending partial paid overdue] }
   validates :amount_paid, numericality: { greater_than_or_equal_to: 0 }

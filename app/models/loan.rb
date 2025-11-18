@@ -1,7 +1,9 @@
 class Loan < ApplicationRecord
   belongs_to :borrower
   belongs_to :referral_agent, optional: true
-  has_many :payments, dependent: :destroy
+  belongs_to :created_by, class_name: "User", optional: true
+  belongs_to :updated_by, class_name: "User", optional: true
+  has_many :payments, dependent: :restrict_with_error
   has_many :installments, dependent: :destroy
 
   validates :amount, presence: true, numericality: { greater_than: 0 } # Amount in Philippine Peso (PHP)
