@@ -62,26 +62,31 @@
 
     <% if @loan.installments.any? %>
       <!-- Summary Stats -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
-        <div>
-          <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Paid</dt>
-          <dd class="text-lg font-bold text-green-600">
-            <%= @loan.installments.where(status: 'paid').count %> / <%= @loan.installments.count %>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <!-- Paid Amounts - Emphasized -->
+        <div class="col-span-2 md:col-span-1 p-6 bg-green-50 border-2 border-green-500 rounded-lg">
+          <dt class="text-xs font-medium text-green-700 uppercase tracking-wide mb-2">Total Paid</dt>
+          <dd class="text-3xl font-bold text-green-600 mb-1">
+            <%= format_php_currency(@loan.installments.sum(&:amount_paid)) %>
+          </dd>
+          <dd class="text-sm font-medium text-green-700">
+            <%= @loan.installments.where(status: 'paid').count %> / <%= @loan.installments.count %> installments
           </dd>
         </div>
-        <div>
+
+        <div class="p-4 bg-gray-50 rounded-lg">
           <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Next Due</dt>
           <dd class="text-lg font-semibold text-gray-900">
             <%= @loan.next_installment&.due_date&.strftime("%b %d, %Y") || 'All paid' %>
           </dd>
         </div>
-        <div>
+        <div class="p-4 bg-gray-50 rounded-lg">
           <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Overdue</dt>
           <dd class="text-lg font-bold text-red-600">
             <%= @loan.overdue_installments.count %>
           </dd>
         </div>
-        <div>
+        <div class="p-4 bg-gray-50 rounded-lg">
           <dt class="text-xs font-medium text-gray-500 uppercase tracking-wide">Remaining</dt>
           <dd class="text-lg font-semibold text-indigo-600">
             <%= format_php_currency(@loan.installments.sum { |i| i.balance_remaining }) %>
@@ -99,7 +104,7 @@
               <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Principal</th>
               <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Interest</th>
               <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Total</th>
-              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Paid</th>
+              <th class="px-4 py-3 text-right text-xs font-bold text-green-700 uppercase tracking-wide bg-green-50">Amount Paid</th>
               <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wide">Balance</th>
               <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wide">Status</th>
             </tr>
@@ -112,7 +117,7 @@
                 <td class="px-4 py-3 text-sm text-gray-600 text-right"><%= format_php_currency(installment.principal_amount) %></td>
                 <td class="px-4 py-3 text-sm text-gray-600 text-right"><%= format_php_currency(installment.interest_amount) %></td>
                 <td class="px-4 py-3 text-sm font-semibold text-gray-900 text-right"><%= format_php_currency(installment.total_amount) %></td>
-                <td class="px-4 py-3 text-sm text-green-600 text-right"><%= format_php_currency(installment.amount_paid) %></td>
+                <td class="px-4 py-3 text-base font-bold text-green-600 text-right bg-green-50"><%= format_php_currency(installment.amount_paid) %></td>
                 <td class="px-4 py-3 text-sm text-indigo-600 text-right font-medium"><%= format_php_currency(installment.balance_remaining) %></td>
                 <td class="px-4 py-3 text-center">
                   <%= render partial: 'installments/status_badge', locals: { installment: installment } %>
