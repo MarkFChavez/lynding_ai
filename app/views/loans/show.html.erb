@@ -66,10 +66,10 @@
         <!-- Paid Amounts - Emphasized -->
         <div class="col-span-2 md:col-span-1 p-6 bg-green-50 border-2 border-green-500 rounded-lg">
           <dt class="text-xs font-medium text-green-700 uppercase tracking-wide mb-2">Total Paid</dt>
-          <dd class="text-3xl font-bold text-green-600 mb-1">
+          <dd class="text-3xl font-bold text-green-600 mb-1 break-words">
             <%= format_php_currency(@loan.installments.sum(&:amount_paid)) %>
           </dd>
-          <dd class="text-sm font-medium text-green-700">
+          <dd class="text-sm font-medium text-green-700 break-words">
             <%= @loan.installments.where(status: 'paid').count %> / <%= @loan.installments.count %> installments
           </dd>
         </div>
