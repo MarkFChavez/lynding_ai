@@ -70,5 +70,5 @@ group :test do
   gem "selenium-webdriver"
 
   # Testing matchers for RSpec
-  gem "shoulda-matchers", "~> 5.0"
+  gem "shoulda-matchers", "~> 7.0"
 end
