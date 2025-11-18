@@ -1,40 +1,55 @@
-<div class="min-h-screen flex items-start sm:items-center justify-center px-4 sm:px-6 lg:px-8 pt-12 sm:pt-0">
-  <div class="w-full max-w-md">
-    <div class="text-center mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Lynding</h1>
-      <p class="mt-2 text-sm text-gray-600">Sign in to your account</p>
-    </div>
+<div class="min-h-screen flex flex-col bg-gradient-to-br from-indigo-600 via-purple-600 to-blue-600 relative overflow-hidden">
+  <!-- Decorative Background Shapes -->
+  <div class="absolute top-20 right-10 w-72 h-72 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+  <div class="absolute bottom-20 left-10 w-80 h-80 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+  <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
 
-    <div class="bg-white rounded-lg shadow-md p-8">
-      <% if alert = flash[:alert] %>
-        <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-md" id="alert">
-          <%= alert %>
-        </div>
-      <% end %>
+  <!-- Main Content -->
+  <div class="flex-1 flex items-start sm:items-center justify-center px-4 sm:px-6 lg:px-8 pt-12 sm:pt-0">
+    <div class="w-full max-w-md relative z-10">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-white drop-shadow-lg">Lynding</h1>
+        <p class="mt-2 text-sm text-indigo-100">Sign in to your account</p>
+      </div>
 
-      <% if notice = flash[:notice] %>
-        <div class="mb-4 p-3 bg-green-50 border border-green-200 text-green-600 text-sm rounded-md" id="notice">
-          <%= notice %>
-        </div>
-      <% end %>
-
-      <%= form_with url: session_url do |form| %>
-        <div class="space-y-4">
-          <div>
-            <%= form.label :email_address, "Email", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "you@example.com", value: params[:email_address], class: "block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm" %>
+      <div class="bg-white/95 backdrop-blur-sm rounded-lg shadow-2xl p-8 border border-white/20">
+        <% if alert = flash[:alert] %>
+          <div class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-md" id="alert">
+            <%= alert %>
           </div>
+        <% end %>
 
-          <div>
-            <%= form.label :password, "Password", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm" %>
+        <% if notice = flash[:notice] %>
+          <div class="mb-4 p-3 bg-green-50 border border-green-200 text-green-600 text-sm rounded-md" id="notice">
+            <%= notice %>
           </div>
+        <% end %>
 
-          <div class="pt-2">
-            <%= form.submit "Sign in", class: "w-full flex justify-center rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 transition-colors cursor-pointer" %>
+        <%= form_with url: session_url do |form| %>
+          <div class="space-y-4">
+            <div>
+              <%= form.label :email_address, "Email", class: "block text-sm font-medium text-gray-700 mb-1" %>
+              <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "you@example.com", value: params[:email_address], class: "block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+
+            <div>
+              <%= form.label :password, "Password", class: "block text-sm font-medium text-gray-700 mb-1" %>
+              <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm" %>
+            </div>
+
+            <div class="pt-2">
+              <%= form.submit "Sign in", class: "w-full flex justify-center rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 transition-colors cursor-pointer" %>
+            </div>
           </div>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     </div>
   </div>
+
+  <!-- Footer -->
+  <footer class="relative z-10 py-4 text-center">
+    <p class="text-sm text-white/80">
+      Made by <%= link_to "markchavez.dev", "https://markchavez.dev", target: "_blank", rel: "noopener noreferrer", class: "font-medium text-white hover:text-indigo-100 underline decoration-white/50 hover:decoration-white transition-colors" %>
+    </p>
+  </footer>
 </div>

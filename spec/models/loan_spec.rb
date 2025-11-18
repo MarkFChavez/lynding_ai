@@ -55,6 +55,87 @@ RSpec.describe Loan, type: :model do
     end
   end
 
+  describe 'locked fields after installments' do
+    let(:borrower) { Borrower.create!(name: 'Test Borrower') }
+    let(:loan) do
+      Loan.create!(
+        borrower: borrower,
+        amount: 100000,
+        interest_rate: 10,
+        term_months: 12,
+        start_date: Date.today,
+        status: 'active'
+      )
+    end
+
+    it 'prevents updating amount after installments are generated' do
+      loan.amount = 150000
+      expect(loan).not_to be_valid
+      expect(loan.errors[:amount]).to include('cannot be changed after installments are generated. Delete and recreate the loan if you need to change loan amount.')
+    end
+
+    it 'prevents updating interest_rate after installments are generated' do
+      loan.interest_rate = 15
+      expect(loan).not_to be_valid
+      expect(loan.errors[:interest_rate]).to include('cannot be changed after installments are generated. Delete and recreate the loan if you need to change interest rate.')
+    end
+
+    it 'prevents updating term_months after installments are generated' do
+      loan.term_months = 18
+      expect(loan).not_to be_valid
+      expect(loan.errors[:term_months]).to include('cannot be changed after installments are generated. Delete and recreate the loan if you need to change loan term.')
+    end
+
+    it 'prevents updating start_date after installments are generated' do
+      loan.start_date = Date.today + 1.month
+      expect(loan).not_to be_valid
+      expect(loan.errors[:start_date]).to include('cannot be changed after installments are generated. Delete and recreate the loan if you need to change start date.')
+    end
+
+    it 'allows updating status after installments are generated' do
+      loan.status = 'paid'
+      expect(loan).to be_valid
+      expect(loan.save).to be true
+    end
+
+    it 'allows updating borrower after installments are generated' do
+      new_borrower = Borrower.create!(name: 'New Borrower')
+      loan.borrower = new_borrower
+      expect(loan).to be_valid
+      expect(loan.save).to be true
+    end
+
+    it 'allows updating referral_agent after installments are generated' do
+      agent = ReferralAgent.create!(name: 'Test Agent')
+      loan.referral_agent = agent
+      expect(loan).to be_valid
+      expect(loan.save).to be true
+    end
+
+    it 'allows all updates before installments are generated' do
+      loan_without_installments = Loan.new(
+        borrower: borrower,
+        amount: 50000,
+        interest_rate: 8,
+        term_months: 6,
+        start_date: Date.today,
+        status: 'active'
+      )
+
+      # Don't save yet, so no installments are created
+      loan_without_installments.save(validate: false)
+      loan_without_installments.installments.destroy_all
+
+      # Now try to update critical fields
+      loan_without_installments.amount = 60000
+      loan_without_installments.interest_rate = 10
+      loan_without_installments.term_months = 12
+      loan_without_installments.start_date = Date.today + 1.week
+
+      expect(loan_without_installments).to be_valid
+    end
+  end
+
   describe 'calculations' do
     let(:borrower) { Borrower.create!(name: 'Test Borrower') }
     let(:loan) do

@@ -10,6 +10,21 @@
     </div>
   <% end %>
 
+  <% has_installments = loan.persisted? && loan.installments.any? %>
+  <% if has_installments %>
+    <div class="bg-blue-50 border-l-4 border-blue-500 px-4 py-3 rounded-r-md mb-4">
+      <div class="flex items-start">
+        <svg class="h-5 w-5 text-blue-600 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+          <p class="text-sm font-medium text-blue-900">Financial terms are locked</p>
+          <p class="text-sm text-blue-800 mt-1">Amount, interest rate, term, and start date cannot be changed after installments are generated. You can still update status, borrower, and referral agent.</p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
     <div>
       <%= form.label :borrower_id, "Borrower", class: "block text-sm font-medium text-gray-900 mb-2" %>
@@ -23,22 +38,58 @@
 
     <div>
       <%= form.label :amount, "Amount (PHP)", class: "block text-sm font-medium text-gray-900 mb-2" %>
-      <%= form.text_field :amount, placeholder: "0.00", class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:amount].none?, "border-gray-400 bg-gray-50": loan.errors[:amount].any?}] %>
+      <% if has_installments %>
+        <div class="flex items-center gap-2">
+          <%= form.text_field :amount, placeholder: "0.00", disabled: true, class: "block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-500 bg-gray-100 cursor-not-allowed shadow-sm" %>
+          <svg class="h-5 w-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+        </div>
+      <% else %>
+        <%= form.text_field :amount, placeholder: "0.00", class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:amount].none?, "border-gray-400 bg-gray-50": loan.errors[:amount].any?}] %>
+      <% end %>
     </div>
 
     <div>
       <%= form.label :interest_rate, "Interest Rate (%)", class: "block text-sm font-medium text-gray-900 mb-2" %>
-      <%= form.text_field :interest_rate, placeholder: "0.00", class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:interest_rate].none?, "border-gray-400 bg-gray-50": loan.errors[:interest_rate].any?}] %>
+      <% if has_installments %>
+        <div class="flex items-center gap-2">
+          <%= form.text_field :interest_rate, placeholder: "0.00", disabled: true, class: "block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-500 bg-gray-100 cursor-not-allowed shadow-sm" %>
+          <svg class="h-5 w-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+        </div>
+      <% else %>
+        <%= form.text_field :interest_rate, placeholder: "0.00", class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:interest_rate].none?, "border-gray-400 bg-gray-50": loan.errors[:interest_rate].any?}] %>
+      <% end %>
     </div>
 
     <div>
       <%= form.label :term_months, "Term (Months)", class: "block text-sm font-medium text-gray-900 mb-2" %>
-      <%= form.number_field :term_months, placeholder: "12", class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:term_months].none?, "border-gray-400 bg-gray-50": loan.errors[:term_months].any?}] %>
+      <% if has_installments %>
+        <div class="flex items-center gap-2">
+          <%= form.number_field :term_months, placeholder: "12", disabled: true, class: "block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-500 bg-gray-100 cursor-not-allowed shadow-sm" %>
+          <svg class="h-5 w-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+        </div>
+      <% else %>
+        <%= form.number_field :term_months, placeholder: "12", class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:term_months].none?, "border-gray-400 bg-gray-50": loan.errors[:term_months].any?}] %>
+      <% end %>
     </div>
 
     <div>
       <%= form.label :start_date, class: "block text-sm font-medium text-gray-900 mb-2" %>
-      <%= form.date_field :start_date, class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:start_date].none?, "border-gray-400 bg-gray-50": loan.errors[:start_date].any?}] %>
+      <% if has_installments %>
+        <div class="flex items-center gap-2">
+          <%= form.date_field :start_date, disabled: true, class: "block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-500 bg-gray-100 cursor-not-allowed shadow-sm" %>
+          <svg class="h-5 w-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+        </div>
+      <% else %>
+        <%= form.date_field :start_date, class: ["block w-full rounded-md border px-3 py-2 text-gray-900 shadow-sm focus:ring-2 focus:ring-offset-0 transition-colors", {"border-gray-300 focus:border-indigo-600 focus:ring-indigo-600": loan.errors[:start_date].none?, "border-gray-400 bg-gray-50": loan.errors[:start_date].any?}] %>
+      <% end %>
     </div>
 
     <div class="sm:col-span-2">

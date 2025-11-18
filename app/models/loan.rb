@@ -12,6 +12,8 @@ class Loan < ApplicationRecord
   validates :start_date, presence: true
   validates :status, presence: true, inclusion: { in: %w[active paid defaulted] }
 
+  validate :critical_fields_unchangeable_after_installments, on: :update
+
   after_create :generate_installments
 
   # Calculate total amount to be paid (principal + interest)
@@ -100,5 +102,25 @@ class Loan < ApplicationRecord
   # Check if loan payment schedule is current
   def current?
     overdue_installments.none?
+  end
+
+  private
+
+  # Prevent changes to critical fields after installments are generated
+  def critical_fields_unchangeable_after_installments
+    return unless installments.any? # Allow all changes if no installments yet
+
+    critical_fields = {
+      amount: "loan amount",
+      interest_rate: "interest rate",
+      term_months: "loan term",
+      start_date: "start date"
+    }
+
+    critical_fields.each do |field, label|
+      if send("#{field}_changed?")
+        errors.add(field, "cannot be changed after installments are generated. Delete and recreate the loan if you need to change #{label}.")
+      end
+    end
   end
 end
